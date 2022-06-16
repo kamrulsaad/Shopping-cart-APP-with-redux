@@ -4,7 +4,7 @@ import "./App.css";
 import Auth from "./components/Auth";
 import Layout from "./components/Layout";
 import Notifications from "./components/Notifications";
-import { sendRequest } from "./store/cart-slice";
+import { getCardData, sendCartData } from "./store/cart-actions";
 let isFirstRender = true;
 
 function App() {
@@ -12,8 +12,13 @@ function App() {
   const notification = useSelector(state => state.ui.notification)
   const cart = useSelector(state => state.cart)
   useEffect(() => {
+    dispatch(getCardData())
+  },[dispatch])
+  useEffect(() => {
     if (isFirstRender) return isFirstRender = false;
-    dispatch(sendRequest(cart))
+    if(cart.changed){
+      dispatch(sendCartData(cart))
+    }
   }, [cart, dispatch])
   const isLoggedIn = useSelector(state => state.auth.isLoggedIn)
 

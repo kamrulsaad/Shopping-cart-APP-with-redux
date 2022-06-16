@@ -1,15 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { uiActions } from "./ui-slice";
 
 const cartSlice = createSlice({
     name: 'cart',
     initialState: {
         itemsList: [],
         totalQuantity: 0,
-        showCart: false
+        showCart: false,
+        changed: false,
     },
     reducers: {
+        replaceData(state, action){
+            state.totalQuantity = action.payload.totalQuantity
+            state.itemsList = action.payload.itemsList
+        },
         addToCart(state, action) {
+            state.changed = true
             const newItem = action.payload
             const existingItems = state.itemsList.find(item => item.id === newItem.id)
             if (existingItems) {
@@ -28,6 +33,7 @@ const cartSlice = createSlice({
             }
         },
         removeFromCart(state, action) {
+            state.changed = true
             const id = action.payload
             const existingProduct = state.itemsList.find(item => item.id === id)
             if (existingProduct.quantity === 1) {
@@ -44,38 +50,6 @@ const cartSlice = createSlice({
         }
     }
 })
-
-export const sendRequest = (cart) => {
-    return async (dispatch) => {
-        dispatch(uiActions.showNotification({
-            open: true,
-            message: "Sending Request",
-            type: 'warning'
-        }))
-        const sendRequest = async () => {
-            const res = await fetch('https://redux-tutorial-with-database-default-rtdb.firebaseio.com/cart.json', {
-                method: 'PUT',
-                body: JSON.stringify(cart)
-            })
-            const data = await res.json();
-            dispatch(uiActions.showNotification({
-                open: true,
-                message: "Request Sent",
-                type: 'success'
-            }))
-        }
-        try {
-            await sendRequest();
-        }
-        catch (err) {
-            dispatch(uiActions.showNotification({
-                open: true,
-                message: "Something Occured",
-                type: 'Error'
-            }))
-        }
-    }
-}
 
 export const cartActions = cartSlice.actions
 export default cartSlice
