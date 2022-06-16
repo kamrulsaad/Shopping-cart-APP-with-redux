@@ -23,10 +23,21 @@ const cartSlice = createSlice({
                     totalPrice: newItem.price,
                     name: newItem.name
                 })
+                state.totalQuantity++
             }
-            state.totalQuantity++
         },
-        removeFromCart(){},
+        removeFromCart(state, action){
+            const id = action.payload
+            const existingProduct = state.itemsList.find(item => item.id === id)
+            if(existingProduct.quantity===1){
+                state.itemsList = state.itemsList.filter(item => item.id !== id)
+                state.totalQuantity--
+                existingProduct.totalPrice -= existingProduct.price
+            }
+            else{
+                existingProduct.quantity--
+            }
+        },
         setShowCart(state){
             state.showCart = !state.showCart
         }
