@@ -4,7 +4,7 @@ import "./App.css";
 import Auth from "./components/Auth";
 import Layout from "./components/Layout";
 import Notifications from "./components/Notifications";
-import { uiActions } from "./store/ui-slice";
+import { sendRequest } from "./store/cart-slice";
 let isFirstRender = true;
 
 function App() {
@@ -13,30 +13,7 @@ function App() {
   const cart = useSelector(state => state.cart)
   useEffect(() => {
     if (isFirstRender) return isFirstRender = false;
-    const sendRequest = async () => {
-      dispatch(uiActions.showNotification({
-        open: true,
-        message: "Sending Request",
-        type: 'warning'
-      }))
-      const res = await fetch('https://redux-tutorial-with-database-default-rtdb.firebaseio.com/cart.json', {
-        method: 'PUT',
-        body: JSON.stringify(cart)
-      })
-      const data = await res.json();
-      dispatch(uiActions.showNotification({
-        open: true,
-        message: "Request Sent",
-        type: 'success'
-      }))
-    }
-    sendRequest().catch(err => {
-      dispatch(uiActions.showNotification({
-        open: true,
-        message: "Something Occured",
-        type: 'Error'
-      }))
-    })
+    dispatch(sendRequest(cart))
   }, [cart, dispatch])
   const isLoggedIn = useSelector(state => state.auth.isLoggedIn)
 
