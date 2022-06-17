@@ -15,7 +15,7 @@ const CartItem = ({ name, quantity, total, price, id }) => {
   return (
     <div className="cartItem">
       <h2> {name}</h2>
-      <p>${price} /-</p>
+      <p>Price: ${price} /-</p>
       <p>x{quantity}</p>
       <article>Total ${total}</article>
       <button className="cart-actions" onClick={decrementAmount}>
